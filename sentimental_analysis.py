@@ -1,7 +1,7 @@
 from google.cloud import language_v2
 
 
-def sample_analyze_sentiment(text_content: str = "I am so happy and joyful.") -> None:
+def analyze_sentiment(text_content: str = "I am so happy and joyful.") -> None:
     """
     Analyzes Sentiment in a string.
 
@@ -11,7 +11,7 @@ def sample_analyze_sentiment(text_content: str = "I am so happy and joyful.") ->
 
     client = language_v2.LanguageServiceClient()
 
-    text_content = "I am so happy and joyful."
+    # text_content = "I am so happy and joyful."
 
     # Available types: PLAIN_TEXT, HTML
     document_type_in_plain_text = language_v2.Document.Type.PLAIN_TEXT
@@ -33,19 +33,18 @@ def sample_analyze_sentiment(text_content: str = "I am so happy and joyful.") ->
     response = client.analyze_sentiment(
         request={"document": document, "encoding_type": encoding_type}
     )
-    # Get overall sentiment of the input document
-    print(f"Document sentiment score: {response.document_sentiment.score}")
-    print(f"Document sentiment magnitude: {response.document_sentiment.magnitude}")
-    # Get sentiment for all sentences in the document
-    for sentence in response.sentences:
-        print(f"Sentence text: {sentence.text.content}")
-        print(f"Sentence sentiment score: {sentence.sentiment.score}")
-        print(f"Sentence sentiment magnitude: {sentence.sentiment.magnitude}")
 
-    # Get the language of the text, which will be the same as
-    # the language specified in the request or, if not specified,
-    # the automatically-detected language.
-    print(f"Language of the text: {response.language_code}")
+    print(type(response.document_sentiment))
+
+    return float(response.document_sentiment.score)
 
 
-print(sample_analyze_sentiment("i love indians"))
+def score_threshold(score: float):
+    if score > 0.25:
+        return "positive"
+    elif -0.25 < score < 0.25:
+        return "neutral"
+    elif score < -0.25:
+        return "negative"
+    else:
+        return "neutral"
