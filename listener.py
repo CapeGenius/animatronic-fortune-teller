@@ -3,7 +3,9 @@ from recorder import recorder
 from player import player
 from serial import Serial
 from threading import Thread
-import sounddevice
+import sounddevice as sd
+import pydub
+from whisper_live import transcription
 
 
 arduinoComPort = "/dev/ttyACM0"
@@ -24,10 +26,15 @@ class listener:
             serialPort.flushInput()
             lineOfData = serialPort.readline().decode()
             # print(lineOfData)
-            if int(lineOfData) == 0:
-                self.recorder.start()
-            elif int(lineOfData) == 1 and self.recorder.recording:
-                self.recorder.stop()
+            try:
+                if int(lineOfData) == 0:
+                    self.recorder.start()
+                elif int(lineOfData) == 1 and self.recorder.recording:
+                    self.recorder.stop()
+                    transcribed_text = transcription("mic")
+                    print(transcribed_text)
+            except ValueError:
+                continue
 
 
 if __name__ == "__main__":
