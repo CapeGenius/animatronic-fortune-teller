@@ -9,11 +9,10 @@ while True:
     serialPort.flushInput()
     lineOfData = serialPort.readline().decode()
 
-    if lineOfData  == 1:
+    if lineOfData == 1:
         mixer.init()
         mixer.music.load("recording.mp3")
         mixer.music.play()
     else:
         mixer.init()
         mixer.music.stop()
-        
